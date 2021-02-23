@@ -36,6 +36,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Docs", "Docs", "{E5744FA9-7
 		docs\SECURITY.md = docs\SECURITY.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmaDemaTema", "EmaDemaTema\EmaDemaTema.csproj", "{FD3FCB86-7024-4206-8BE1-2CA6CF8C0A2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,10 @@ Global
 		{3BD4837B-D197-41FD-A286-A3256D0770E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BD4837B-D197-41FD-A286-A3256D0770E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BD4837B-D197-41FD-A286-A3256D0770E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD3FCB86-7024-4206-8BE1-2CA6CF8C0A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD3FCB86-7024-4206-8BE1-2CA6CF8C0A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD3FCB86-7024-4206-8BE1-2CA6CF8C0A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD3FCB86-7024-4206-8BE1-2CA6CF8C0A2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
