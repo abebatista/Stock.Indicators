@@ -122,7 +122,8 @@ namespace EmaDemaTema.Controllers
             return _JsonObjectResult;
         }
 
-        protected async Task<JsonObjectResultStats> processGetEmaDemaTema(List<DayQuote> df, int ma_length = 14, decimal funds = 100000)
+        protected async Task<JsonObjectResultStats> processGetEmaDemaTema(List<DayQuote> df, int ma_length = 14, decimal funds = 100000
+            , string entry_field = "NextOpen", string exit_field = "NextOpen", int position_shares = 0)
         {
             JsonObjectResultStats _JsonObjectResult = new JsonObjectResultStats()
             {
@@ -148,6 +149,8 @@ namespace EmaDemaTema.Controllers
                 var previous_df_dema = new EmaResult();
                 var previous_df_tema = new EmaResult();
 
+                var future_df = new DayQuote();
+
                 int in_position = 0;
                 int shares = 1;
 
@@ -158,7 +161,7 @@ namespace EmaDemaTema.Controllers
                 decimal position_entry_price = 0;
                 decimal position_exit_price = 0;
 
-                for (var i = ma_length; i < l; i++)
+                for (var i = ma_length-1; i < l; i++)
                 {
 
                     current_df = df[i];
@@ -171,16 +174,42 @@ namespace EmaDemaTema.Controllers
                     previous_df_dema = df_dema[i - 1];
                     previous_df_tema = df_tema[i - 1];
 
+                    if (previous_df_ema.Ema == null)
+                    {
+                        continue;
+                    }
+
+                    future_df = current_df;
+                    if (entry_field == "NextOpen" || exit_field == "NextOpen")
+                    {
+                        if (i + 1 == l)
+                        {
+                            continue;
+                        }
+                        future_df = df[i + 1];
+                    }
+
                     if (in_position == 0)
                     {
                         int shares_temp = Convert.ToInt32((funds / current_df.Close).ToString().Split('.')[0]);
                         if ((current_df_tema.Ema > current_df_dema.Ema) && (current_df_dema.Ema > current_df_ema.Ema) && (previous_df_tema.Ema < previous_df_dema.Ema) && (previous_df_dema.Ema < previous_df_ema.Ema) && (shares_temp > 0))
                         {
-                            position_entry_price = current_df.Close;
+                            position_entry_price = future_df.Close;
+                            if (entry_field == "NextOpen")
+                            {
+                                position_entry_price = future_df.Open;
+                            }
                             in_position = 1;
-                            total_trades = total_trades + 1;
-                            shares = shares_temp;
-                            funds = funds - (position_entry_price * shares);
+                            if (position_shares == 0)
+                            {
+                                shares = shares_temp;
+                            }
+                            else
+                            {
+                                shares = position_shares;
+                            }
+                            var position_entry_price_shares = (position_entry_price * shares);
+                            funds = funds - position_entry_price_shares;
                         }
                         else
                         {
@@ -191,19 +220,26 @@ namespace EmaDemaTema.Controllers
                     {
                         if ((current_df_tema.Ema < current_df_dema.Ema) && (current_df_dema.Ema < current_df_ema.Ema) && (previous_df_tema.Ema > previous_df_dema.Ema) && (previous_df_dema.Ema > previous_df_ema.Ema))
                         {
-                            position_exit_price = current_df.Close;
+                            position_exit_price = future_df.Close;
+                            if (exit_field == "NextOpen")
+                            {
+                                position_exit_price = future_df.Open;
+                            }
+                            total_trades = total_trades + 1;
                             in_position = 0;
                             if (position_entry_price <= position_exit_price)
                             {
                                 total_trades_won = total_trades_won + 1;
-                                funds = funds + (position_exit_price * shares);
+                                //funds = funds + (position_exit_price * shares);
                             }
                             else
                             {
                                 total_trades_lost = total_trades_lost + 1;
                                 //funds = funds - ((position_entry_price - position_exit_price) * shares);
-                                funds = funds + (position_exit_price * shares);
+                                //funds = funds + (position_exit_price * shares);
                             }
+                            var position_exit_price_shares = (position_exit_price * shares);
+                            funds = funds + position_exit_price_shares;
                         }
                         else
                         {
@@ -214,6 +250,7 @@ namespace EmaDemaTema.Controllers
 
                 if (in_position == 1)
                 {
+                    /*
                     position_exit_price = current_df.Close;
                     in_position = 0;
                     if (position_entry_price <= position_exit_price)
@@ -226,6 +263,8 @@ namespace EmaDemaTema.Controllers
                         total_trades_lost = total_trades_lost + 1;
                         funds = funds - ((position_entry_price - position_exit_price) * shares);
                     }
+                    */
+                    funds = funds + (position_entry_price * shares);
                 }
 
                 int total_trades_won_percentage = 0;
@@ -256,7 +295,7 @@ namespace EmaDemaTema.Controllers
         [HttpGet, HttpPost]
         [Route("GetEmaDemaTema")]
         public async Task<JsonObjectResultStatsTotal> GetEmaDemaTema(string symbols = "SPY", int fromYear = 1900, int fromMonth = 1, int fromDay = 1, int toYear = 0, int toMonth = 0, int toDay = 0
-            , int funds = 10000, int init_row = 3, int max_row = 51)
+            , int funds = 10000, int init_row = 3, int max_row = 51, string entry_field = "NextOpen", string exit_field = "NextOpen", int position_shares = 0, string force_ma = "")
         {
             JsonObjectResultStatsTotal _JsonObjectResult = new JsonObjectResultStatsTotal()
             {
@@ -279,7 +318,17 @@ namespace EmaDemaTema.Controllers
                 var symbolList = symbols.Split(',').ToList();
                 var symbolHistoricalList = new Dictionary<string, JsonObjectResult>();
                 var results_final = new Dictionary<string, List<JsonObjectResultStats>>();
-                foreach (var new_symbol in symbolList)
+                var force_ma_dict = new Dictionary<string, string>();
+                var force_ma_list = force_ma.Split(',').ToList();
+
+                foreach (var force_ma_list_element in force_ma_list)
+                {
+                    if(!force_ma_dict.ContainsKey(force_ma_list_element))
+                    {
+                        force_ma_dict.Add(force_ma_list_element, force_ma_list_element);
+                    }
+                }
+                    foreach (var new_symbol in symbolList)
                 {
                     var symbol = new_symbol.Trim();
                     var _JsonObjectResultHistorical = await processGetHistoricalDataViaYahooFinanceAPI(symbol, fromYear, fromMonth, fromDay, toYear, toMonth, toDay);
@@ -287,7 +336,11 @@ namespace EmaDemaTema.Controllers
                     var _processGetEmaDemaTemaList = new List<JsonObjectResultStats>();
                     for (var ii = init_row; ii < max_row; ii++)
                     {
-                        var _processGetEmaDemaTema = await processGetEmaDemaTema(_JsonObjectResultHistorical.listDayQuote, ii, funds);
+                        if(force_ma_list.Count() != 0 && !force_ma_dict.ContainsKey(ii.ToString()))
+                        {
+                            continue;
+                        }
+                        var _processGetEmaDemaTema = await processGetEmaDemaTema(_JsonObjectResultHistorical.listDayQuote, ii, funds, entry_field, exit_field, position_shares);
                         _processGetEmaDemaTemaList.Add(_processGetEmaDemaTema);
                     }
                     results_final.Add(symbol, _processGetEmaDemaTemaList);
@@ -309,20 +362,24 @@ namespace EmaDemaTema.Controllers
                     var counter_stats = 0;
                     foreach (var results_final_record_stats_current in results_final_record_stats)
                     {
-                        var stats_current = stats[counter_stats];
-
-                        stats_current.funds = (stats_current.funds + results_final_record_stats_current.funds) / 2;
-                        stats_current.total_trades = (stats_current.total_trades + results_final_record_stats_current.total_trades);
-                        stats_current.total_trades_lost = (stats_current.total_trades_lost + results_final_record_stats_current.total_trades_lost);
-                        stats_current.total_trades_won = (stats_current.total_trades_won + results_final_record_stats_current.total_trades_won);
-
-                        if (stats_current.total_trades > 0)
+                        if(results_final_record_stats_current.total_trades > 0)
                         {
-                            stats_current.total_trades_won_percentage = (stats_current.total_trades_won * 100) / stats_current.total_trades;
-                            stats_current.total_trades_lost_percentage = (stats_current.total_trades_lost * 100) / stats_current.total_trades;
-                        }
+                            var stats_current = stats[counter_stats];
 
-                        stats[counter_stats] = stats_current;
+                            stats_current.funds = (stats_current.funds + results_final_record_stats_current.funds) / 2;
+                            stats_current.total_trades = (stats_current.total_trades + results_final_record_stats_current.total_trades);
+                            stats_current.total_trades_lost = (stats_current.total_trades_lost + results_final_record_stats_current.total_trades_lost);
+                            stats_current.total_trades_won = (stats_current.total_trades_won + results_final_record_stats_current.total_trades_won);
+
+                            //if (stats_current.total_trades > 0)
+                            {
+                                stats_current.total_trades_won_percentage = (stats_current.total_trades_won * 100) / stats_current.total_trades;
+                                stats_current.total_trades_lost_percentage = (stats_current.total_trades_lost * 100) / stats_current.total_trades;
+                            }
+
+                            stats[counter_stats] = stats_current; 
+                        }
+                        counter_stats++;
                         /*
                         if (results_final_record_stats_current.total_trades > 0)
                         {
@@ -341,26 +398,26 @@ namespace EmaDemaTema.Controllers
                 var combined_results_true_trades = 0;
                 foreach (var results_final_record_stats_current in stats)
                 {
-
                     if (results_final_record_stats_current.total_trades > 0)
                     {
                         combined_results_true_trades++;
-                        combined_results.total_trades = (combined_results.total_trades + results_final_record_stats_current.total_trades);
-                        combined_results.total_trades_lost = (combined_results.total_trades_lost + results_final_record_stats_current.total_trades_lost);
-                        combined_results.total_trades_won = (combined_results.total_trades_won + results_final_record_stats_current.total_trades_won);
-                        combined_results.total_trades_won_percentage = (combined_results.total_trades_won * 100) / combined_results.total_trades;
-                        combined_results.total_trades_lost_percentage = (combined_results.total_trades_lost * 100) / combined_results.total_trades;
-                        combined_results.funds = (combined_results.funds + results_final_record_stats_current.funds);
+                        combined_results.total_trades += results_final_record_stats_current.total_trades;
+                        combined_results.total_trades_lost += results_final_record_stats_current.total_trades_lost;
+                        combined_results.total_trades_won += results_final_record_stats_current.total_trades_won;
+                        //combined_results.total_trades_won_percentage = (combined_results.total_trades_won * 100) / combined_results.total_trades;
+                        //combined_results.total_trades_lost_percentage = (combined_results.total_trades_lost * 100) / combined_results.total_trades;
+                        combined_results.funds += results_final_record_stats_current.funds;
                     }
-
                 }
 
                 if (combined_results_true_trades > 0)
                 {
                     combined_results.funds = combined_results.funds / combined_results_true_trades;
+                    combined_results.total_trades_won_percentage = (combined_results.total_trades_won * 100) / combined_results.total_trades;
+                    combined_results.total_trades_lost_percentage = (combined_results.total_trades_lost * 100) / combined_results.total_trades;
                 }
 
-                stats = stats.OrderByDescending(x => x.total_trades_won_percentage).ToList();
+                stats = stats.OrderByDescending(x => x.total_trades_won_percentage).ThenByDescending(x => x.total_trades_lost_percentage).ToList();
                 _JsonObjectResult.JsonObjectResultStatsRecords = stats;
 
                 _JsonObjectResult.combined_results = combined_results;
