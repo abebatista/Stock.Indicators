@@ -27,12 +27,20 @@ public class StdDevCatalogTests : TestBase
         lookbackPeriodsParam.Should().NotBeNull();
 
         listing.Results.Should().NotBeNull();
-        listing.Results.Should().HaveCount(1);
+        listing.Results.Should().HaveCount(3);
 
         IndicatorResult stddevResult = listing.Results.SingleOrDefault(static r => r.DataName == "StdDev");
         stddevResult.Should().NotBeNull();
         stddevResult?.DisplayName.Should().Be("Standard deviation");
         stddevResult.IsReusable.Should().Be(true);
+        IndicatorResult meanResult = listing.Results.SingleOrDefault(static r => r.DataName == "Mean");
+        meanResult.Should().NotBeNull();
+        meanResult?.DisplayName.Should().Be("Mean");
+        meanResult.IsReusable.Should().Be(false);
+        IndicatorResult zScoreResult = listing.Results.SingleOrDefault(static r => r.DataName == "ZScore");
+        zScoreResult.Should().NotBeNull();
+        zScoreResult?.DisplayName.Should().Be("Z-Score");
+        zScoreResult.IsReusable.Should().Be(false);
     }
 
     [TestMethod]
@@ -56,12 +64,20 @@ public class StdDevCatalogTests : TestBase
         lookbackPeriodsParam.Should().NotBeNull();
 
         listing.Results.Should().NotBeNull();
-        listing.Results.Should().HaveCount(1);
+        listing.Results.Should().HaveCount(3);
 
         IndicatorResult stddevResult = listing.Results.SingleOrDefault(static r => r.DataName == "StdDev");
         stddevResult.Should().NotBeNull();
         stddevResult!.DisplayName.Should().Be("Standard deviation");
         stddevResult.IsReusable.Should().Be(true);
+        IndicatorResult meanResult = listing.Results.SingleOrDefault(static r => r.DataName == "Mean");
+        meanResult.Should().NotBeNull();
+        meanResult?.DisplayName.Should().Be("Mean");
+        meanResult.IsReusable.Should().Be(false);
+        IndicatorResult zScoreResult = listing.Results.SingleOrDefault(static r => r.DataName == "ZScore");
+        zScoreResult.Should().NotBeNull();
+        zScoreResult?.DisplayName.Should().Be("Z-Score");
+        zScoreResult.IsReusable.Should().Be(false);
     }
 
     [TestMethod]
@@ -85,11 +101,19 @@ public class StdDevCatalogTests : TestBase
         lookbackPeriodsParam.Should().NotBeNull();
 
         listing.Results.Should().NotBeNull();
-        listing.Results.Should().HaveCount(1);
+        listing.Results.Should().HaveCount(3);
 
         IndicatorResult stddevResult = listing.Results.SingleOrDefault(static r => r.DataName == "StdDev");
         stddevResult.Should().NotBeNull();
         stddevResult!.DisplayName.Should().Be("Standard deviation");
         stddevResult.IsReusable.Should().Be(true);
+        IndicatorResult meanResult = listing.Results.SingleOrDefault(static r => r.DataName == "Mean");
+        meanResult.Should().NotBeNull();
+        meanResult?.DisplayName.Should().Be("Mean");
+        meanResult.IsReusable.Should().Be(false);
+        IndicatorResult zScoreResult = listing.Results.SingleOrDefault(static r => r.DataName == "ZScore");
+        zScoreResult.Should().NotBeNull();
+        zScoreResult?.DisplayName.Should().Be("Z-Score");
+        zScoreResult.IsReusable.Should().Be(false);
     }
 }

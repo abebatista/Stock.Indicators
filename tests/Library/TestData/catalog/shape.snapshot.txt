@@ -1835,6 +1835,8 @@ Parameters:
   - lookbackPeriods : Int32 : optional
 Results:
   - StdDev : Default : reusable=true : pane=StdDev
+  - Mean : Default : reusable=false : pane=Price
+  - ZScore : Default : reusable=false : pane=ZScore
 
 ### STDEV / Buffer
 Method: ToStdDevList
@@ -1842,6 +1844,8 @@ Parameters:
   - lookbackPeriods : Int32 : optional
 Results:
   - StdDev : Default : reusable=true : pane=StdDev
+  - Mean : Default : reusable=false : pane=Price
+  - ZScore : Default : reusable=false : pane=ZScore
 
 ### STDEV / Stream
 Method: ToStdDevHub
@@ -1849,6 +1853,8 @@ Parameters:
   - lookbackPeriods : Int32 : optional
 Results:
   - StdDev : Default : reusable=true : pane=StdDev
+  - Mean : Default : reusable=false : pane=Price
+  - ZScore : Default : reusable=false : pane=ZScore
 
 ### STDEV-CHANNELS / Series
 Method: ToStdDevChannels
@@ -2135,6 +2141,8 @@ Parameters:
 Results:
   - Sar : Default : reusable=true : pane=Price
   - IsStop : Default : reusable=false : pane=(none)
+  - UpperBand : Default : reusable=false : pane=Price
+  - LowerBand : Default : reusable=false : pane=Price
 
 ### VOL-STOP / Buffer
 Method: ToVolatilityStopList
@@ -2144,6 +2152,8 @@ Parameters:
 Results:
   - Sar : Default : reusable=true : pane=Price
   - IsStop : Default : reusable=false : pane=(none)
+  - UpperBand : Default : reusable=false : pane=Price
+  - LowerBand : Default : reusable=false : pane=Price
 
 ### VOL-STOP / Stream
 Method: ToVolatilityStopHub
@@ -2153,6 +2163,8 @@ Parameters:
 Results:
   - Sar : Default : reusable=true : pane=Price
   - IsStop : Default : reusable=false : pane=(none)
+  - UpperBand : Default : reusable=false : pane=Price
+  - LowerBand : Default : reusable=false : pane=Price
 
 ### VORTEX / Series
 Method: ToVortex
