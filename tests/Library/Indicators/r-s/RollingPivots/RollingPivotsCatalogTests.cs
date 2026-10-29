@@ -14,7 +14,7 @@ public class RollingPivotsCatalogTests : TestBase
 
         // Assert
         listing.Should().NotBeNull();
-        listing.Name.Should().Be("Rolling Pivots");
+        listing.Name.Should().Be("Rolling Pivot Points");
         listing.Uiid.Should().Be("ROLLING-PIVOTS");
         listing.Style.Should().Be(Style.Series);
         listing.Category.Should().Be(Category.PriceTrend);

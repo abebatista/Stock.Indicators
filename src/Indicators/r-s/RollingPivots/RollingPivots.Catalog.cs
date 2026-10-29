@@ -3,11 +3,11 @@ namespace FacioQuo.Stock.Indicators;
 public static partial class RollingPivots
 {
     /// <summary>
-    /// Rolling Pivots Common Base Listing
+    /// Rolling Pivot Points Common Base Listing
     /// </summary>
     internal static readonly IndicatorListing CommonListing =
         new CatalogListingBuilder()
-            .WithName("Rolling Pivots")
+            .WithName("Rolling Pivot Points")
             .WithId("ROLLING-PIVOTS")
             .WithCategory(Category.PriceTrend)
             .AddParameter<int>("windowPeriods", "Window Periods", description: "Number of periods for the rolling window", isRequired: false, defaultValue: 20, minimum: 1, maximum: 250)
@@ -23,7 +23,7 @@ public static partial class RollingPivots
             .Build();
 
     /// <summary>
-    /// Rolling Pivots Series Listing
+    /// Rolling Pivot Points Series Listing
     /// </summary>
     internal static readonly IndicatorListing SeriesListing =
         new CatalogListingBuilder(CommonListing)
@@ -32,7 +32,7 @@ public static partial class RollingPivots
             .Build();
 
     /// <summary>
-    /// Rolling Pivots Stream Listing
+    /// Rolling Pivot Points Stream Listing
     /// </summary>
     internal static readonly IndicatorListing StreamListing =
         new CatalogListingBuilder(CommonListing)
@@ -41,7 +41,7 @@ public static partial class RollingPivots
             .Build();
 
     /// <summary>
-    /// Rolling Pivots Buffer Listing
+    /// Rolling Pivot Points Buffer Listing
     /// </summary>
     internal static readonly IndicatorListing BufferListing =
         new CatalogListingBuilder(CommonListing)

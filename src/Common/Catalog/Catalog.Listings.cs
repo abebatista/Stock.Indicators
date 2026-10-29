@@ -306,7 +306,7 @@ public static partial class Catalog
         // PRS (Price Relative Strength)
         _listings.Add(Prs.SeriesListing);
 
-        // PVO (Price Volume Oscillator)
+        // PVO (Percentage Volume Oscillator)
         _listings.Add(Pvo.BufferListing);
         _listings.Add(Pvo.SeriesListing);
         _listings.Add(Pvo.StreamListing);
@@ -329,12 +329,12 @@ public static partial class Catalog
         _listings.Add(Roc.SeriesListing);
         _listings.Add(Roc.StreamListing);
 
-        // ROC with Bands
+        // Rate of Change with Bands
         _listings.Add(RocWb.SeriesListing);
         _listings.Add(RocWb.StreamListing);
         _listings.Add(RocWb.BufferListing);
 
-        // Rolling Pivots
+        // Rolling Pivot Points
         _listings.Add(RollingPivots.BufferListing);
         _listings.Add(RollingPivots.SeriesListing);
         _listings.Add(RollingPivots.StreamListing);
@@ -402,7 +402,7 @@ public static partial class Catalog
         _listings.Add(SuperTrend.SeriesListing);
         _listings.Add(SuperTrend.StreamListing);
 
-        // T3 (Triple Exponential Moving Average)
+        // T3 (Tillson T3 Moving Average)
         _listings.Add(T3.BufferListing);
         _listings.Add(T3.SeriesListing);
         _listings.Add(T3.StreamListing);
